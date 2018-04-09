@@ -7,12 +7,11 @@ import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 
 @Slf4j
-public class InitialAction implements Action<States, Events> {
+public class EndTransitionAction implements Action<States, Events> {
 
     @Override
     public void execute(StateContext<States, Events> stateContext) {
-        log.info("Entered state: Initial");
-        log.info("Initializing...");
+        log.info("Finished processing...");
     }
 
 }
