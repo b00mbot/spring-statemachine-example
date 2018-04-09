@@ -12,10 +12,10 @@ public class TypeAProcessingGuard implements Guard<States, Events> {
     @Override
     public boolean evaluate(StateContext<States, Events> stateContext) {
 
-        // Get request from header
-        Request request = (Request) stateContext.getMessageHeader(StateMachineHeaders.REQUEST);
+        // Get request from extended state
+        Request request = (Request) stateContext.getExtendedState().getVariables().get(StateMachineHeaders.REQUEST);
 
-        if(request == null || request.getProcessingType() != Request.ProcessingType.TYPE_A) {
+        if (request == null || request.getProcessingType() != Request.ProcessingType.TYPE_A) {
             return false;
         }
 

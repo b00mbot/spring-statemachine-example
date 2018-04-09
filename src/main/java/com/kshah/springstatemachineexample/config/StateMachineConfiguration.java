@@ -24,7 +24,8 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
     @Override
     public void configure(StateMachineConfigurationConfigurer<States, Events> config) throws Exception {
         config.withConfiguration()
-                .autoStartup(true);
+                .autoStartup(true)
+                .machineId(Thread.currentThread().getName() + " - " + Thread.currentThread().getId());
     }
 
 

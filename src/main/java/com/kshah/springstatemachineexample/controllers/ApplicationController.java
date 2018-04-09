@@ -7,8 +7,6 @@ import com.kshah.springstatemachineexample.model.States;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,14 +22,13 @@ public class ApplicationController {
 
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     public ResponseEntity start(@RequestBody Request request) {
-        StateMachine<States, Events> stateMachine = stateMachineFactory.getStateMachine(String.valueOf(Thread.currentThread().getId()));
+        StateMachine<States, Events> stateMachine = stateMachineFactory.getStateMachine();
 
-        // Send START PROCESSING event to state machine and attach request
-        Message<Events> startProcessingMessage = MessageBuilder
-                .withPayload(Events.START_PROCESSING)
-                .setHeader(StateMachineHeaders.REQUEST, request)
-                .build();
-        stateMachine.sendEvent(startProcessingMessage);
+        // Attach request to state machine
+        stateMachine.getExtendedState().getVariables().put(StateMachineHeaders.REQUEST, request);
+
+        // Send START PROCESSING event to state machine
+        stateMachine.sendEvent(Events.START_PROCESSING);
 
         // Send FINISHED PROCESSING event to state machine
         stateMachine.sendEvent(Events.FINISHED_PROCESSING);

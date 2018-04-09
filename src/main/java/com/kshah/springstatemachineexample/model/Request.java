@@ -43,6 +43,10 @@ public class Request {
         }
 
 
+        public String getType() {
+            return type;
+        }
+
     }
 
 }
