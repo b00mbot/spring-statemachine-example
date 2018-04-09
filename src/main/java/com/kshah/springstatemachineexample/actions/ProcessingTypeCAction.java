@@ -7,11 +7,11 @@ import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 
 @Slf4j
-public class ProcessingAction implements Action<States, Events> {
+public class ProcessingTypeCAction implements Action<States, Events> {
 
     @Override
     public void execute(StateContext<States, Events> stateContext) {
-        log.info("Entered state: Processing");
+        log.info("Entered state: Processing Type C");
         log.info("Processing...");
     }
 

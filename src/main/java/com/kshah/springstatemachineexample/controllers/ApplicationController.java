@@ -1,12 +1,17 @@
 package com.kshah.springstatemachineexample.controllers;
 
 import com.kshah.springstatemachineexample.model.Events;
+import com.kshah.springstatemachineexample.model.Request;
+import com.kshah.springstatemachineexample.model.StateMachineHeaders;
 import com.kshah.springstatemachineexample.model.States;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,11 +22,20 @@ public class ApplicationController {
     @Autowired
     private StateMachineFactory<States, Events> stateMachineFactory;
 
-    @RequestMapping(value = "/start", method = RequestMethod.GET)
-    public ResponseEntity start() {
+    @RequestMapping(value = "/start", method = RequestMethod.POST)
+    public ResponseEntity start(@RequestBody Request request) {
         StateMachine<States, Events> stateMachine = stateMachineFactory.getStateMachine(String.valueOf(Thread.currentThread().getId()));
-        stateMachine.sendEvent(Events.START_PROCESSING);
+
+        // Send START PROCESSING event to state machine and attach request
+        Message<Events> startProcessingMessage = MessageBuilder
+                .withPayload(Events.START_PROCESSING)
+                .setHeader(StateMachineHeaders.REQUEST, request)
+                .build();
+        stateMachine.sendEvent(startProcessingMessage);
+
+        // Send FINISHED PROCESSING event to state machine
         stateMachine.sendEvent(Events.FINISHED_PROCESSING);
+
         return new ResponseEntity(HttpStatus.OK);
     }
 
