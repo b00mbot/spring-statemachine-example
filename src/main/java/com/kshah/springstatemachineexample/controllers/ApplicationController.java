@@ -20,7 +20,6 @@ public class ApplicationController {
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     public ResponseEntity start() {
         StateMachine<States, Events> stateMachine = stateMachineFactory.getStateMachine(String.valueOf(Thread.currentThread().getId()));
-        stateMachine.start();
         stateMachine.sendEvent(Events.START_PROCESSING);
         stateMachine.sendEvent(Events.FINISHED_PROCESSING);
         return new ResponseEntity(HttpStatus.OK);
